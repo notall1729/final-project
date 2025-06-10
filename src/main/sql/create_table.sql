@@ -14,3 +14,10 @@ create table emails (
     foreign key (sender_id) references users(id)
 );
 
+create table email_recipients (
+    email_id varchar(6),
+    recipient_id int,
+    is_read boolean default false,
+    foreign key (email_id) references emails(id),
+    foreign key (recipient_id) references users(id)
+);
