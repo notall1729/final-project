@@ -6,7 +6,9 @@ import aut.ap.EmailRecipient;
 import aut.ap.User;
 import org.hibernate.Session;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EmailService {
     public static void sendEmail(User sender, List<String> recipientEmails, String subject, String body){
@@ -31,6 +33,94 @@ public class EmailService {
 
             session.getTransaction().commit();
             System.out.println("Successfully sent your email.\nCode: " + email.getId());
+        }
+    }
+
+    public static void viewEmails(User user, String type){
+        try(Session session = DatabaseManager.getSession()){
+            List<Email> emails = new ArrayList<>();
+
+            switch (type.toLowerCase()){
+                case "a":
+                    emails = session.createQuery("select from Email e join EmailRecipient r on e.id = r.email.id where r.recipient.id = :userId ordered by e.sentAt desc", Email.class)
+                            .setParameter("userId", user.getId())
+                            .getResultList();
+
+                    System.out.println("All Emails: ");
+                    break;
+
+                case "u":
+                    emails = session.createQuery("select e from email e join EmailRecipient r on e.id = r.email.id where r.recipient.id = :userId and r.isRead = false order by e.sentAt desc", Email.class)
+                            .setParameter("userId", user.getId())
+                            .getResultList();
+
+                    System.out.println("Unread Emails: ");
+                    break;
+
+                case "s":
+                    emails = session.createQuery("from Email where sender.id = :userId order by sentAt desc", Email.class)
+                            .setParameter("userId", user.getId())
+                            .getResultList();
+
+                    System.out.println("Sent Emails: ");
+                    break;
+
+                default:
+                    System.out.println("Invalid option!");
+                    return;
+            }
+
+            for (Email email : emails){
+                String recipients = session.createQuery("select u.email from User u join EmailRecipient r on u.id = r.recipient.id where r.email.id = :emailId", String.class)
+                        .setParameter("emailId", email.getId())
+                        .getResultList()
+                        .stream()
+                        .collect(Collectors.joining(", "));
+
+                System.out.print("+ " + email.getSender().getEmail() + " - " + email.getSubject() + " (" + email.getId() + ")");
+            }
+        }
+    }
+
+    public static void readEmail(User user, String emailCode){
+        try(Session session = DatabaseManager.getSession()){
+            Email email = session.createQuery("from Email where id = :emailCode", Email.class)
+                    .setParameter("emailCode", emailCode)
+                    .uniqueResult();
+
+            if (email == null){
+                System.out.println("Error: Email not found!");
+                return;
+            }
+
+            boolean isRecipient = session.createQuery("select COUNT(r) from EmailRecipient r where r.email.id = :emailId and r.recipient.id = :userId", Long.class)
+                    .setParameter("emailId", email.getId())
+                    .setParameter("userId", user.getId())
+                    .getSingleResult() > 0;
+
+            if (!isRecipient && email.getSender().getId() != user.getId()){
+                System.out.println("You cannot read this email.");
+                return;
+            }
+
+            String recipients = session.createQuery("select u.email from User u join EmsilRecipient r on u.id = r.recipient.id where r.email.id = :emailId", String.class)
+                    .setParameter("emailId", email.getId())
+                    .getResultList()
+                    .stream()
+                    .collect(Collectors.joining(", "));
+
+            System.out.println("\nCode: " + email.getId());
+            System.out.println("Recipient(s): " + recipients);
+            System.out.println("Subject: " + email.getSubject());
+            System.out.println("Date: " + email.getSentAt());
+            System.out.println("\n" + email.getBody());
+
+            session.beginTransaction();
+            session.createQuery("update EmailRecipient set isRead = true where email.id = :emailId and recipient.id = :userId")
+                    .setParameter("emailId", email.getId())
+                    .setParameter("userId", user.getId())
+                    .executeUpdate();
+            session.getTransaction().commit();
         }
     }
 }
