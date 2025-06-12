@@ -1,5 +1,6 @@
-package aut.ap;
+package aut.ap.database;
 
+import aut.ap.User;
 import jakarta.persistence.*;
 
 @Entity
@@ -19,7 +20,7 @@ public class EmailRecipient {
 
 
     public EmailRecipient(){
-        
+
     }
     public EmailRecipient(Email email, boolean isRead, User recipient) {
         this.email = email;

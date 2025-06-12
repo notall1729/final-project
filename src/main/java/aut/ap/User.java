@@ -8,8 +8,12 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String name;
+
+    @Column(unique = true)
     private String email;
+
     private String password;
 
 
@@ -19,7 +23,7 @@ public class User {
 
     public User(String name, String email, String password) {
         this.name = name;
-        this.email = email;
+        this.email = email.endsWith("@milou.com") ? email : email + "@milou.com";
         this.password = password;
     }
 
