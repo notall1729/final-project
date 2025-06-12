@@ -26,7 +26,7 @@ public class AuthService {
             session.persist(newUser);
             session.getTransaction().commit();
 
-            System.out.println("Your new account is created. Go ahead and login!");
+            System.out.println("Your new account is created.\n Go ahead and login!");
             return true;
         }
     }
