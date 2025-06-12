@@ -1,6 +1,5 @@
-package aut.ap.database;
+package aut.ap;
 
-import aut.ap.User;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,15 +15,14 @@ public class EmailRecipient {
     private User recipient;
 
     @Column(name = "is_read")
-    private boolean isRead;
+    private boolean isRead = false;
 
 
     public EmailRecipient(){
 
     }
-    public EmailRecipient(Email email, boolean isRead, User recipient) {
+    public EmailRecipient(Email email, User recipient) {
         this.email = email;
-        this.isRead = isRead;
         this.recipient = recipient;
     }
 

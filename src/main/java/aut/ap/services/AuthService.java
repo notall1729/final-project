@@ -1,5 +1,7 @@
-package aut.ap;
+package aut.ap.services;
 
+import aut.ap.DatabaseManager;
+import aut.ap.User;
 import org.hibernate.Session;
 
 //manage login and sign up
@@ -43,7 +45,6 @@ public class AuthService {
                 return null;
             }
 
-            System.out.println("Welcome back, " + user.getName() + "!");
             return user;
         }
     }

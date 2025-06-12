@@ -3,6 +3,7 @@ package aut.ap;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name  = "emails")
@@ -24,10 +25,11 @@ public class Email {
 
     }
 
-    public Email(User sender, String subject, LocalDateTime sentAt, String body) {
+    public Email(User sender, String subject, String body) {
+        this.id = generateEmailCode();
         this.sender = sender;
         this.subject = subject;
-        this.sentAt = sentAt;
+        this.sentAt = LocalDateTime.now();
         this.body = body;
     }
 
@@ -61,5 +63,9 @@ public class Email {
 
     public LocalDateTime getSentAt() {
         return sentAt;
+    }
+
+    private String generateEmailCode(){
+        return UUID.randomUUID().toString().replace("-", "").substring(0, 6);
     }
 }
