@@ -5,7 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 public class DatabaseManager {
-    private static final SessionFactory sessionFactory;
+    private static final SessionFactory sessionFactory ;
 
     static {
         try {

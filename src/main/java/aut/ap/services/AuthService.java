@@ -14,15 +14,14 @@ public class AuthService {
                     .setParameter("email", email.endsWith("@milou.com") ? email : email + "@milou.com")
                     .uniqueResult();
 
-            if (existingUser != null || existingUser.getPassword().length() > 8){
                 if (existingUser != null) {
                     System.out.println("Error: This email is already registered!");
+                    return false;
                 }
-                if (existingUser.getPassword().length() < 8){
+                if (password.length() < 8) {
                     System.out.println("Error: Password must be at least 8 characters long.");
+                    return false;
                 }
-                return false;
-            }
 
             User newUser = new User(name, email, password);
             session.persist(newUser);

@@ -9,17 +9,24 @@
             com.mysql.cj.jdbc.Driver
         </property>
         <property name="hibernate.connection.url">
-            jdbc:mysql://matterhorn.liara.cloud:34604/practical_babbage
+            jdbc:mysql://everest.liara.cloud:30472/sweet_ellis
         </property>
         <property name="hibernate.connection.username">
             root
         </property>
         <property name="hibernate.connection.password">
-            LNNVtrQs7oCYuHxLGGq4mxI3
+            fXncdXVPDCUWPGOlzTJmgvzE
         </property>
         <!-- Hibernate settings -->
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
         <property name="hibernate.highlight_sql">true</property>
+        <!-- Mappings -->
+        <mapping class="aut.ap.User"/>
+        <mapping class="aut.ap.Email"/>
+        <mapping class="aut.ap.EmailRecipient"/>
+        <mapping class="aut.ap.DatabaseManager"/>
+        <mapping class="aut.ap.services.AuthService"/>
+        <mapping class="aut.ap.services.EmailService"/>
     </session-factory>
 </hibernate-configuration>

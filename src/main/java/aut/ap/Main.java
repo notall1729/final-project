@@ -24,17 +24,17 @@ public class Main {
                 System.out.println("Password: ");
                 String password = scanner.nextLine();
 
-                AuthService.login(email, password);
+               user = AuthService.login(email, password);
             }
             else if (input.equals("s") || input.equals("sign up")){
                 System.out.println("Name: ");
-                String name = scanner.nextLine();
+                String name = scanner.nextLine().trim();
 
                 System.out.println("Email: ");
-                String email = scanner.nextLine();
+                String email = scanner.nextLine().trim();
 
                 System.out.println("Password: ");
-                String password = scanner.nextLine();
+                String password = scanner.nextLine().trim();
 
                 if(AuthService.signUp(name, email, password)){
                     continue;
