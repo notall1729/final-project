@@ -77,6 +77,15 @@ public class Main {
                         System.out.println("Invalid option.");
                     }
                 }
+                else if(command.equals("r") || command.equals("reply")){
+                    System.out.println("Code: ");
+                    String code = scanner.nextLine();
+
+                    System.out.println("Body: ");
+                    String body = scanner.nextLine();
+
+                    EmailService.replyToEmail(user, code, body);
+                }
             }
         }
     }
