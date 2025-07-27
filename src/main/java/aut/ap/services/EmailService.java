@@ -164,4 +164,45 @@ public class EmailService {
             session.getTransaction().commit();
         }
     }
+
+    public static void replyToEmail(User replier, String originalCode, String body){
+        try(Session session = DatabaseManager.getSession()) {
+            session.beginTransaction();
+
+            Email originalEmail = session.createQuery("from Email where id = :code", Email.class)
+                    .setParameter("code", originalCode)
+                    .uniqueResult();
+            if(originalEmail == null){
+                System.out.println("Email not found!");
+                session.getTransaction().commit();
+                return;
+            }
+            Long count = session.createQuery("select count(r) from EmailRecipient r where r.email.id = :emailId and r.recipient.id = :useId", Long.class)
+                    .setParameter("emailId", originalEmail.getId())
+                    .setParameter("userId", replier.getId())
+                    .uniqueResult();
+
+            boolean isRecipient = count != null && count > 0;
+            boolean isSender = originalEmail.getSender().getId() == replier.getId();
+
+            if (!isRecipient && !isSender){
+                System.out.println("You can only reply to emails that are sent to you or sent by you!");
+                session.getTransaction().commit();
+                return;
+            }
+
+                Email replyEmail = new Email(replier, "[Re] " + originalEmail.getSubject(), body);
+                session.persist(replyEmail);
+
+               User replyRecipient = originalEmail.getSender();
+               EmailRecipient replyEmailRecipient = new EmailRecipient(replyEmail, replyRecipient);
+               session.persist(replyEmailRecipient);
+
+                session.getTransaction().commit();
+                System.out.println("Successfully sent your reply to email " + originalCode + "\nCode: " + replyEmail.getId());
+            }catch (Exception e){
+        System.out.println("Error replying email: " + e.getMessage());
+        e.printStackTrace();
+    }
+    }
 }
