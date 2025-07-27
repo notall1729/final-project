@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+
 public class EmailService {
     public static void sendEmail(User sender, List<String> recipientEmails, String subject, String body){
         try(Session session = DatabaseManager.getSession()){
@@ -109,7 +110,7 @@ public class EmailService {
     public static List<Email> readByCode(String code) {
         try (Session session = DatabaseManager.getSession()) {
             List<Email> emails = new ArrayList<>();
-            emails = session.createQuery("select from Email where id = :code", Email.class)
+            emails = session.createQuery("from Email where id = :code", Email.class)
                     .setParameter("code", code)
                     .getResultList();
 
