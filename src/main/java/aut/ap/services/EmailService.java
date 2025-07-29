@@ -64,7 +64,7 @@ public class EmailService {
                     break;
 
                 case "s":
-                    emails = session.createQuery("select from Email where sender.id = :userId order by sentAt desc", Email.class)
+                    emails = session.createQuery("select e from Email e where e.sender.id = :userId order by e.sentAt desc", Email.class)
                             .setParameter("userId", user.getId())
                             .getResultList();
 
@@ -76,10 +76,6 @@ public class EmailService {
                    String code = scanner.nextLine();
                    emails = readByCode(code);
                    break;
-
-                default:
-                    System.out.println("Invalid option!");
-                    return;
             }
 
             if (emails.isEmpty()){
@@ -99,7 +95,6 @@ public class EmailService {
            if (!recipients.isEmpty()){
                System.out.println(" To: " + recipients);
               }
-           System.out.println(" Date: " + email.getSentAt());
             }
         }catch (Exception e){
             System.out.println("Error viewing emails: " + e.getMessage());
@@ -177,7 +172,7 @@ public class EmailService {
                 session.getTransaction().commit();
                 return;
             }
-            Long count = session.createQuery("select count(r) from EmailRecipient r where r.email.id = :emailId and r.recipient.id = :useId", Long.class)
+            Long count = session.createQuery("select count(r) from EmailRecipient r where r.email.id = :emailId and r.recipient.id = :userId", Long.class)
                     .setParameter("emailId", originalEmail.getId())
                     .setParameter("userId", replier.getId())
                     .uniqueResult();

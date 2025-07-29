@@ -45,48 +45,66 @@ public class Main {
                 continue;
             }
 
-            if (user != null){
+            if (user != null) {
+                printLine();
                 System.out.println("Welcome back, " + user.getName() + "!");
-                System.out.println("[S]end, [V]iew, [R]eply, [F]orward: ");
-                String command = scanner.nextLine().toLowerCase();
+                while (true) {
+                    printLine();
+                    System.out.println("[S]end, [V]iew, [R]eply, [F]orward: ");
+                    String command = scanner.nextLine().toLowerCase();
 
-                if (command.equals("s") || command.equals("send")){
-                    System.out.println("Recipient(s) (comma-separated): ");
-                    String recipientInput = scanner.nextLine();
-                    List<String> recipient = Arrays.asList(recipientInput.split(","));
+                    if (command.equals("s") || command.equals("send")) {
+                        System.out.println("Recipient(s) (comma-separated): ");
+                        String recipientInput = scanner.nextLine();
+                        List<String> recipient = Arrays.asList(recipientInput.split(","));
 
-                    System.out.println("Subject: ");
-                    String subject = scanner.nextLine();
+                        System.out.println("Subject: ");
+                        String subject = scanner.nextLine();
 
-                    System.out.println("Body: ");
-                    String body = scanner.nextLine();
+                        System.out.println("Body: ");
+                        String body = scanner.nextLine();
 
-                    EmailService.sendEmail(user, recipient, subject, body);
-                }
-                else if(command.equals("v") || command.equals("view")){
-                    System.out.println("[A]ll emails, [U]nread emails, [S]ent emails, Read by [C]ode: ");
-                    String newCommand = scanner.nextLine().toLowerCase();
+                        EmailService.sendEmail(user, recipient, subject, body);
 
-                    if (newCommand.equals("a") || command.equals("u") || command.equals("s")){
-                        EmailService.viewEmails(user, newCommand);
-                    } else if(newCommand.equals("c")){
+                    } else if (command.equals("v") || command.equals("view")) {
+                        printLine();
+                        System.out.println("[A]ll emails, [U]nread emails, [S]ent emails, Read by [C]ode: ");
+                        String newCommand = scanner.nextLine().toLowerCase();
+
+                        if (newCommand.equals("a") || newCommand.equals("u") || newCommand.equals("s")) {
+                            EmailService.viewEmails(user, newCommand);
+                        } else if (newCommand.equals("c")) {
+                            System.out.println("Code: ");
+                            String emailCode = scanner.nextLine();
+                            EmailService.readEmail(user, emailCode);
+                        } else {
+                            System.out.println("Invalid option.");
+                        }
+                    } else if (command.equals("r") || command.equals("reply")) {
                         System.out.println("Code: ");
-                        String emailCode = scanner.nextLine();
-                        EmailService.readEmail(user, emailCode);
-                    } else {
-                        System.out.println("Invalid option.");
+                        String code = scanner.nextLine();
+
+                        System.out.println("Body: ");
+                        String body = scanner.nextLine();
+
+                        EmailService.replyToEmail(user, code, body);
+                    } else if (command.equals("f") || command.equals("forward")){
+                        System.out.println("Code: ");
+                        String code = scanner.nextLine();
+
+                        System.out.println("Recipient(s) (comma-separated): ");
+                        String recipientInput = scanner.nextLine();
+                        List<String> recipient = Arrays.asList(recipientInput.split(","));
+
                     }
-                }
-                else if(command.equals("r") || command.equals("reply")){
-                    System.out.println("Code: ");
-                    String code = scanner.nextLine();
-
-                    System.out.println("Body: ");
-                    String body = scanner.nextLine();
-
-                    EmailService.replyToEmail(user, code, body);
                 }
             }
         }
+    }
+
+    public static void printLine(){
+        System.out.println();
+        System.out.println("-----------------------------------------------------");
+        System.out.println();
     }
 }
