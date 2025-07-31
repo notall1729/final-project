@@ -37,6 +37,7 @@ public class Main {
                 String password = scanner.nextLine().trim();
 
                 if(AuthService.signUp(name, email, password)){
+                    printLine();
                     continue;
                 }
             }
@@ -96,6 +97,10 @@ public class Main {
                         String recipientInput = scanner.nextLine();
                         List<String> recipient = Arrays.asList(recipientInput.split(","));
 
+                        System.out.println("Extra note: ");
+                        String note = scanner.nextLine();
+
+                        EmailService.forwardEmail(user, code, recipient);
                     }
                 }
             }

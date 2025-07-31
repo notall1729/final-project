@@ -200,4 +200,54 @@ public class EmailService {
         e.printStackTrace();
     }
     }
+    public static void forwardEmail(User sender, String originalCode, List<String> newRecipients){
+        try(Session session = DatabaseManager.getSession()) {
+            session.beginTransaction();
+
+            Email originalEmail = session.createQuery("from Email where id = :code", Email.class)
+                    .setParameter("code", originalCode)
+                    .uniqueResult();
+
+            if(originalEmail == null){
+                System.out.println("Email not found!");
+                session.getTransaction().commit();
+                return;
+            }
+            boolean isRecipient = session.createQuery("select count(r) from EmailRecipient r where r.email.id = :emailId and r.recipient.id = :userId", Long.class)
+                    .setParameter("emailId", originalEmail.getId())
+                    .setParameter("userId", sender.getId())
+                    .uniqueResult() > 0;
+
+            boolean isSender = originalEmail.getSender().getId() == sender.getId();
+
+            if (!isRecipient && !isSender){
+                System.out.println("You can only forward emails that were sent to you or sent by you!");
+                session.getTransaction().commit();
+                return;
+            }
+
+            Email forwardedEmail = new Email(sender, "[FW] " + originalEmail.getSubject(), originalEmail.getBody());
+            session.persist(forwardedEmail);
+
+            for (String recipientEmail : newRecipients){
+                User recipient = session.createQuery("from User where email = :email", User.class)
+                        .setParameter("email", recipientEmail.endsWith("milou.com") ? recipientEmail : recipientEmail + "milou.com")
+                        .uniqueResult();
+
+                if (recipient != null){
+                    EmailRecipient emailRecipient = new EmailRecipient(forwardedEmail, recipient);
+                    session.persist(emailRecipient);
+                } else {
+                    System.out.println("Error: Recipient '" + recipientEmail + "'not found!");
+                }
+            }
+
+            session.getTransaction().commit();
+            System.out.println("Successfully forwarded your email.");
+            System.out.println("Code: " + forwardedEmail.getId());
+        }catch (Exception e){
+            System.out.println("Error forwarding email: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }
