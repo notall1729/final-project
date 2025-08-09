@@ -3,6 +3,7 @@ package aut.ap;
 import aut.ap.services.AuthService;
 import aut.ap.services.EmailService;
 
+import javax.swing.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -11,6 +12,14 @@ public class Main {
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+
+        JFrame frame = new JFrame("Welcome to milou!");
+        JPanel mainPanel = new JPanel();
+
+        ImageIcon imageIcon = new ImageIcon("")
+        frame.setSize(800, 600);
+        frame.add(mainPanel);
+        frame.setVisible(true);
         while (true){
             System.out.println("[L]ogin, [S]ign up: ");
             String input = scanner.nextLine().toLowerCase();
