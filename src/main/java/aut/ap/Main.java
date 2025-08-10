@@ -20,6 +20,7 @@ public class Main {
 
         JFrame frame = new JFrame("milou!");
         JPanel mainPanel = new JPanel();
+        frame.setBounds(0, 0, 750,480);
         mainPanel.setLayout(null);
 
 
@@ -30,6 +31,7 @@ public class Main {
         JLabel welcome = new JLabel("Welcome to Milou!");
         welcome.setBounds(310, 60, 140, 40);
         welcome.setFont(new Font("Arial", Font.BOLD, 16));
+
 
         JButton loginButton = new JButton("Login");
         loginButton.setBounds(320, 240,110, 40);
@@ -45,7 +47,7 @@ public class Main {
                 mainPanel.add(emailLabel);
 
                 JTextField emailField = new JTextField();
-                emailField.setBounds(320, 210, 140, 40);
+                emailField.setBounds(320, 150, 140, 40);
                 mainPanel.add(emailField);
 
                 JLabel passwordLabel = new JLabel("Password:");
@@ -53,17 +55,60 @@ public class Main {
                 mainPanel.add(passwordLabel);
 
                 JTextField passwordField = new JTextField();
-                passwordField.setBounds(320, 150, 140, 40);
+                passwordField.setBounds(320, 210, 140, 40);
                 mainPanel.add(passwordField);
 
                 JButton nextButton = new JButton("Next");
-                nextButton.setBounds(340, 280, 90, 30);
+                nextButton.setBounds(340, 260, 90, 30);
                 mainPanel.add(nextButton);
+
+                JButton goBack = new JButton("Go back");
+                goBack.setBounds(340, 300, 90, 30);
+                mainPanel.add(goBack);
+
                 nextButton.addActionListener(ev -> {
                     String email = emailField.getText();
                     String password = passwordField.getText();
 
                     user = AuthService.login(email, password);
+
+                    if (user == null){
+                        JLabel loginError = new JLabel("Error: Invalid email or password!");
+                        loginError.setBounds(300, 340, 250, 30);
+                        loginError.setForeground(Color.RED);
+                        mainPanel.add(loginError);
+                        mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
+                        mainPanel.revalidate();
+                        mainPanel.repaint();
+                    } else {
+                        mainPanel.removeAll();
+                        mainPanel.setLayout(null);
+                        mainPanel.add(backgroundLabel);
+                        JLabel welcomeMessage = new JLabel("Welcome back, " + user.getName() + "!");
+                        welcomeMessage.setBounds(290, 100, 180, 30);
+                        welcomeMessage.setFont(new Font("Arial", Font.BOLD, 16));
+                        mainPanel.add(welcomeMessage);
+
+                        JButton sendButton = new JButton("Send");
+                        sendButton.setBounds(280, 170, 80, 40);
+                        mainPanel.add(sendButton);
+
+                        JButton viewButton = new JButton("View");
+                        viewButton.setBounds(280, 230, 80, 40);
+                        mainPanel.add(viewButton);
+
+                        JButton replyButton = new JButton("Reply");
+                        replyButton.setBounds(380, 170, 80, 40);
+                        mainPanel.add(replyButton);
+
+                        JButton forwardButton = new JButton("Forward");
+                        forwardButton.setBounds(380, 230, 80, 40);
+                        mainPanel.add(forwardButton);
+
+                        mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
+                        mainPanel.revalidate();
+                        mainPanel.repaint();
+                    }
                 });
 
                 mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
@@ -106,7 +151,7 @@ public class Main {
                 mainPanel.add(passwordField);
 
                 JButton goBack = new JButton("Go back");
-                goBack.setBounds(340, 320, 90, 30);
+                goBack.setBounds(340, 300, 90, 30);
                 mainPanel.add(goBack);
                 goBack.addActionListener(new ActionListener() {
                     @Override
@@ -126,7 +171,7 @@ public class Main {
                 });
 
                 JButton nextButton = new JButton("Next");
-                nextButton.setBounds(340, 280, 90, 30);
+                nextButton.setBounds(340, 260, 90, 30);
                 mainPanel.add(nextButton);
                 nextButton.addActionListener(ev -> {
                     String name = nameField.getText();
@@ -136,17 +181,15 @@ public class Main {
                     String result = AuthService.signUp(name, email, password);
                     if(!result.equals("true")){
                       JLabel error = new JLabel(result);
-                      error.setBounds(340, 70, 190, 130);
+                      error.setBounds(420, 320, 70, 30);
                       error.setForeground(Color.RED);
                       mainPanel.add(error);
                     } else {
                         JLabel massage = new JLabel("<html>Your new account is created.<br> Go ahead and login!<html>");
-                        massage.setBounds(340, 70, 210, 160);
+                        massage.setBounds(420, 320, 70, 30);
                         massage.setForeground(Color.GREEN);
                         mainPanel.add(massage);
-
                     }
-
                 });
                 mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
                 mainPanel.revalidate();
