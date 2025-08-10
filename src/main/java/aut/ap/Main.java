@@ -4,6 +4,9 @@ import aut.ap.services.AuthService;
 import aut.ap.services.EmailService;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -13,12 +16,105 @@ public class Main {
 
     public static void main(String[] args) {
 
-        JFrame frame = new JFrame("Welcome to milou!");
+        JFrame frame = new JFrame("milou!");
         JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(null);
 
-        ImageIcon imageIcon = new ImageIcon("")
-        frame.setSize(800, 600);
+
+        ImageIcon background = new ImageIcon("C:\\Users\\MY-PC\\final-project\\src\\main\\resources\\background.png");
+        JLabel backgroundLabel = new JLabel(background);
+        backgroundLabel.setBounds(0, 0, 750, 480);
+
+        JLabel welcome = new JLabel("Welcome to Milou!");
+        welcome.setBounds(310, 60, 140, 40);
+        welcome.setFont(new Font("Arial", Font.BOLD, 16));
+
+        JButton loginButton = new JButton("Login");
+        loginButton.setBounds(320, 240,110, 40);
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainPanel.removeAll();
+                mainPanel.setLayout(null);
+                mainPanel.add(backgroundLabel);
+
+                JLabel emailLabel = new JLabel("Email:");
+                emailLabel.setBounds(250, 150, 110, 40);
+                mainPanel.add(emailLabel);
+
+                JTextField emailField = new JTextField();
+                emailField.setBounds(320, 210, 140, 40);
+                mainPanel.add(emailField);
+
+                JLabel passwordLabel = new JLabel("Password:");
+                passwordLabel.setBounds(250, 210, 110, 40);
+                mainPanel.add(passwordLabel);
+
+                JTextField passwordField = new JTextField();
+                passwordField.setBounds(320, 150, 140, 40);
+                mainPanel.add(passwordField);
+
+                JButton nextButton = new JButton("Next");
+                nextButton.setBounds(340, 280, 90, 30);
+                mainPanel.add(nextButton);
+
+                mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
+                mainPanel.revalidate();
+                mainPanel.repaint();
+            }
+        });
+
+        JButton signupButton = new JButton("Sign up");
+        signupButton.setBounds(320,180, 110, 40);
+        signupButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainPanel.removeAll();
+                mainPanel.setLayout(null);
+                mainPanel.add(backgroundLabel);
+
+                JLabel nameLabel = new JLabel("Name:");
+                nameLabel.setBounds(250, 90, 110, 40);
+                mainPanel.add(nameLabel);
+
+                JTextField nameField = new JTextField();
+                nameField.setBounds(320, 90, 140, 40);
+                mainPanel.add(nameField);
+
+                JLabel emailLabel = new JLabel("Email:");
+                emailLabel.setBounds(250, 150, 110, 40);
+                mainPanel.add(emailLabel);
+
+                JTextField emailField = new JTextField();
+                emailField.setBounds(320, 210, 140, 40);
+                mainPanel.add(emailField);
+
+                JLabel passwordLabel = new JLabel("Password:");
+                passwordLabel.setBounds(250, 210, 110, 40);
+                mainPanel.add(passwordLabel);
+
+                JTextField passwordField = new JTextField();
+                passwordField.setBounds(320, 150, 140, 40);
+                mainPanel.add(passwordField);
+
+                JButton nextButton = new JButton("Next");
+                nextButton.setBounds(340, 280, 90, 30);
+                mainPanel.add(nextButton);
+
+                mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
+                mainPanel.revalidate();
+                mainPanel.repaint();
+            }
+        });
+
+        mainPanel.add(welcome);
+        mainPanel.add(loginButton);
+        mainPanel.add(signupButton);
+        mainPanel.add(backgroundLabel);
+
+        frame.setBounds(0, 0, 750, 480);
         frame.add(mainPanel);
+
         frame.setVisible(true);
         while (true){
             System.out.println("[L]ogin, [S]ign up: ");
