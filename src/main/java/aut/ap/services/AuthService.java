@@ -1,12 +1,13 @@
 package aut.ap.services;
 
 import aut.ap.DatabaseManager;
+import aut.ap.Main;
 import aut.ap.User;
 import org.hibernate.Session;
 
 //manage login and sign up
 public class AuthService {
-    public static boolean signUp(String name, String email, String password){
+    public static String signUp(String name, String email, String password){
         try(Session session = DatabaseManager.getSession()){
             session.beginTransaction();
 
@@ -15,12 +16,10 @@ public class AuthService {
                     .uniqueResult();
 
                 if (existingUser != null) {
-                    System.out.println("Error: This email is already registered!");
-                    return false;
+                    return "Error: This email is already registered!";
                 }
                 if (password.length() < 8) {
-                    System.out.println("Error: Password must be at least 8 characters long.");
-                    return false;
+                    return "Error: Password must be at least 8 characters long.";
                 }
 
             User newUser = new User(name, email, password);
@@ -28,7 +27,7 @@ public class AuthService {
             session.getTransaction().commit();
 
             System.out.println("Your new account is created.\n Go ahead and login!");
-            return true;
+            return "true";
         }
     }
 

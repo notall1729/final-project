@@ -13,8 +13,10 @@ import java.util.Scanner;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
+    static User user = null;
 
     public static void main(String[] args) {
+
 
         JFrame frame = new JFrame("milou!");
         JPanel mainPanel = new JPanel();
@@ -57,6 +59,12 @@ public class Main {
                 JButton nextButton = new JButton("Next");
                 nextButton.setBounds(340, 280, 90, 30);
                 mainPanel.add(nextButton);
+                nextButton.addActionListener(ev -> {
+                    String email = emailField.getText();
+                    String password = passwordField.getText();
+
+                    user = AuthService.login(email, password);
+                });
 
                 mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
                 mainPanel.revalidate();
@@ -97,10 +105,49 @@ public class Main {
                 passwordField.setBounds(320, 150, 140, 40);
                 mainPanel.add(passwordField);
 
+                JButton goBack = new JButton("Go back");
+                goBack.setBounds(340, 320, 90, 30);
+                mainPanel.add(goBack);
+                goBack.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        mainPanel.removeAll();
+                        mainPanel.setLayout(null);
+                        mainPanel.add(backgroundLabel);
+
+                        mainPanel.add(loginButton);
+                        mainPanel.add(signupButton);
+                        mainPanel.add(welcome);
+
+                        mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
+                        mainPanel.revalidate();
+                        mainPanel.repaint();
+                    }
+                });
+
                 JButton nextButton = new JButton("Next");
                 nextButton.setBounds(340, 280, 90, 30);
                 mainPanel.add(nextButton);
+                nextButton.addActionListener(ev -> {
+                    String name = nameField.getText();
+                    String email = emailField.getText();
+                    String password = passwordField.getText();
 
+                    String result = AuthService.signUp(name, email, password);
+                    if(!result.equals("true")){
+                      JLabel error = new JLabel(result);
+                      error.setBounds(340, 70, 190, 130);
+                      error.setForeground(Color.RED);
+                      mainPanel.add(error);
+                    } else {
+                        JLabel massage = new JLabel("<html>Your new account is created.<br> Go ahead and login!<html>");
+                        massage.setBounds(340, 70, 210, 160);
+                        massage.setForeground(Color.GREEN);
+                        mainPanel.add(massage);
+
+                    }
+
+                });
                 mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
                 mainPanel.revalidate();
                 mainPanel.repaint();
@@ -120,7 +167,6 @@ public class Main {
             System.out.println("[L]ogin, [S]ign up: ");
             String input = scanner.nextLine().toLowerCase();
 
-            User user = null;
 
             if (input.equals("l") || input.equals("login")){
                 System.out.println("Email: ");
@@ -141,7 +187,7 @@ public class Main {
                 System.out.println("Password: ");
                 String password = scanner.nextLine().trim();
 
-                if(AuthService.signUp(name, email, password)){
+                if(AuthService.signUp(name, email, password).equals("true")){
                     printLine();
                     continue;
                 }
