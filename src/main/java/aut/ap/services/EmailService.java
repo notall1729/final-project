@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 
 public class EmailService {
-    public static void sendEmail(User sender, List<String> recipientEmails, String subject, String body){
+    public static String sendEmail(User sender, List<String> recipientEmails, String subject, String body){
         try(Session session = DatabaseManager.getSession()){
             session.beginTransaction();
 
@@ -29,16 +29,17 @@ public class EmailService {
                     EmailRecipient emailRecipient = new EmailRecipient(email, recipient);
                     session.persist(emailRecipient);
                 } else {
-                    System.out.println("Error: Recipient '" + recipientEmail + "' not found!");
+                    return "Error: Recipient '" + recipientEmail + "' not found!";
                 }
             }
 
             session.getTransaction().commit();
-            System.out.println("Successfully sent your email.\nCode: " + email.getId());
+            return "<html>Successfully sent your email.<br>Code: <html>" + email.getId();
         } catch (Exception e){
             System.out.println("Error sending email: " + e.getMessage());
             e.printStackTrace();
         }
+        return "";
     }
 
     public static void viewEmails(User user, String type){

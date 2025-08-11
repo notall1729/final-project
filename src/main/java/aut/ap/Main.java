@@ -32,6 +32,8 @@ public class Main {
         welcome.setBounds(310, 60, 140, 40);
         welcome.setFont(new Font("Arial", Font.BOLD, 16));
 
+        JButton signupButton = new JButton("Sign up");
+        signupButton.setBounds(320,180, 110, 40);
 
         JButton loginButton = new JButton("Login");
         loginButton.setBounds(320, 240,110, 40);
@@ -65,6 +67,22 @@ public class Main {
                 JButton goBack = new JButton("Go back");
                 goBack.setBounds(340, 300, 90, 30);
                 mainPanel.add(goBack);
+                goBack.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        mainPanel.removeAll();
+                        mainPanel.setLayout(null);
+                        mainPanel.add(backgroundLabel);
+
+                        mainPanel.add(loginButton);
+                        mainPanel.add(signupButton);
+                        mainPanel.add(welcome);
+
+                        mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
+                        mainPanel.revalidate();
+                        mainPanel.repaint();
+                    }
+                });
 
                 nextButton.addActionListener(ev -> {
                     String email = emailField.getText();
@@ -85,25 +103,125 @@ public class Main {
                         mainPanel.setLayout(null);
                         mainPanel.add(backgroundLabel);
                         JLabel welcomeMessage = new JLabel("Welcome back, " + user.getName() + "!");
-                        welcomeMessage.setBounds(290, 100, 180, 30);
+                        welcomeMessage.setBounds(305, 100, 180, 30);
                         welcomeMessage.setFont(new Font("Arial", Font.BOLD, 16));
                         mainPanel.add(welcomeMessage);
 
+                        mainPanel.add(goBack);
+
+
                         JButton sendButton = new JButton("Send");
-                        sendButton.setBounds(280, 170, 80, 40);
+                        sendButton.setBounds(300, 170, 80, 40);
                         mainPanel.add(sendButton);
+                        sendButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                mainPanel.removeAll();
+                                mainPanel.setLayout(null);
+                                mainPanel.add(backgroundLabel);
+
+                               JLabel recipientsLabel = new JLabel("Recipient(s) (comma-separated): ");
+                               recipientsLabel.setBounds(50, 150, 190, 30);
+                               mainPanel.add(recipientsLabel);
+
+                               JTextField recipientsField = new JTextField();
+                               recipientsField.setBounds(240,150, 150, 40);
+                               mainPanel.add(recipientsField);
+
+                               JLabel subjectLabel = new JLabel("Subject: ");
+                               subjectLabel.setBounds(185, 200, 50, 30);
+                               mainPanel.add(subjectLabel);
+
+                               JTextField subjectField = new JTextField();
+                               subjectField.setBounds(240, 200, 150, 40);
+                               mainPanel.add(subjectField);
+
+                               JLabel bodyLabel = new JLabel("Body: ");
+                               bodyLabel.setBounds(200, 250, 50, 30);
+                               mainPanel.add(bodyLabel);
+
+                               JTextField bodyField = new JTextField();
+                               bodyField.setBounds(240, 250, 450, 80);
+                               mainPanel.add(bodyField);
+
+                               JButton sendEmail = new JButton("Send");
+                               sendEmail.setBounds(340, 350, 90, 30);
+
+                               mainPanel.add(sendEmail);
+                               sendEmail.addActionListener(new ActionListener() {
+                                   @Override
+                                   public void actionPerformed(ActionEvent e) {
+                                       String recipient = recipientsField.getText();
+                                       List<String> recipients = Arrays.asList(recipient.split(","));
+                                       String subject = subjectField.getText();
+                                       String body = bodyField.getText();
+
+                                       String result = EmailService.sendEmail(user, recipients, subject, body);
+
+                                       mainPanel.removeAll();
+                                       mainPanel.setLayout(null);
+                                       mainPanel.add(backgroundLabel);
+
+                                       JLabel message = new JLabel(result);
+                                       message.setBounds(220, 170, 380, 100);
+                                       message.setFont(new Font("Arial", Font.BOLD, 20));
+
+                                       if (result.startsWith("Error")){
+                                           message.setForeground(Color.RED);
+                                       } else {
+                                           message.setForeground(Color.GREEN);
+                                       }
+                                       mainPanel.add(message);
+
+                                       mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
+                                       mainPanel.revalidate();
+                                       mainPanel.repaint();
+                                   }
+                               });
+
+                                mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
+                                mainPanel.revalidate();
+                                mainPanel.repaint();
+                            }
+                        });
 
                         JButton viewButton = new JButton("View");
-                        viewButton.setBounds(280, 230, 80, 40);
+                        viewButton.setBounds(300, 230, 80, 40);
                         mainPanel.add(viewButton);
+                        viewButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                mainPanel.removeAll();
+                                mainPanel.setLayout(null);
+                                mainPanel.add(backgroundLabel);
+
+
+
+                                mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
+                                mainPanel.revalidate();
+                                mainPanel.repaint();
+                            }
+                        });
 
                         JButton replyButton = new JButton("Reply");
-                        replyButton.setBounds(380, 170, 80, 40);
+                        replyButton.setBounds(400, 170, 80, 40);
                         mainPanel.add(replyButton);
+                        replyButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+
+                            }
+                        });
 
                         JButton forwardButton = new JButton("Forward");
-                        forwardButton.setBounds(380, 230, 80, 40);
+                        forwardButton.setBounds(400, 230, 80, 40);
                         mainPanel.add(forwardButton);
+                        forwardButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+
+                            }
+                        });
 
                         mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
                         mainPanel.revalidate();
@@ -117,8 +235,7 @@ public class Main {
             }
         });
 
-        JButton signupButton = new JButton("Sign up");
-        signupButton.setBounds(320,180, 110, 40);
+
         signupButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -180,15 +297,20 @@ public class Main {
 
                     String result = AuthService.signUp(name, email, password);
                     if(!result.equals("true")){
-                      JLabel error = new JLabel(result);
-                      error.setBounds(420, 320, 70, 30);
-                      error.setForeground(Color.RED);
+                      JTextArea error = new JTextArea(result);
+                      error.setBounds(250, 340, 100, 30);
+                      error.setEditable(false);
+                      error.setOpaque(false);
                       mainPanel.add(error);
+                      mainPanel.revalidate();
+                      mainPanel.repaint();
                     } else {
                         JLabel massage = new JLabel("<html>Your new account is created.<br> Go ahead and login!<html>");
-                        massage.setBounds(420, 320, 70, 30);
+                        massage.setBounds(150, 340, 90, 30);
                         massage.setForeground(Color.GREEN);
                         mainPanel.add(massage);
+                        mainPanel.revalidate();
+                        mainPanel.repaint();
                     }
                 });
                 mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
