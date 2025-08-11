@@ -197,7 +197,7 @@ public class EmailService {
     }
         return "";
     }
-    public static void forwardEmail(User sender, String originalCode, List<String> newRecipients){
+    public static String  forwardEmail(User sender, String originalCode, List<String> newRecipients){
         try(Session session = DatabaseManager.getSession()) {
             session.beginTransaction();
 
@@ -206,9 +206,8 @@ public class EmailService {
                     .uniqueResult();
 
             if(originalEmail == null){
-                System.out.println("Email not found!");
                 session.getTransaction().commit();
-                return;
+                return "Email not found!";
             }
             boolean isRecipient = session.createQuery("select count(r) from EmailRecipient r where r.email.id = :emailId and r.recipient.id = :userId", Long.class)
                     .setParameter("emailId", originalEmail.getId())
@@ -218,9 +217,8 @@ public class EmailService {
             boolean isSender = originalEmail.getSender().getId() == sender.getId();
 
             if (!isRecipient && !isSender){
-                System.out.println("You can only forward emails that were sent to you or sent by you!");
                 session.getTransaction().commit();
-                return;
+                return "You can only forward emails that were sent to you or sent by you!";
             }
 
             Email forwardedEmail = new Email(sender, "[FW] " + originalEmail.getSubject(), originalEmail.getBody());
@@ -235,16 +233,16 @@ public class EmailService {
                     EmailRecipient emailRecipient = new EmailRecipient(forwardedEmail, recipient);
                     session.persist(emailRecipient);
                 } else {
-                    System.out.println("Error: Recipient '" + recipientEmail + "'not found!");
+                     return "Error: Recipient '" + recipientEmail + "'not found!";
                 }
             }
 
             session.getTransaction().commit();
-            System.out.println("Successfully forwarded your email.");
-            System.out.println("Code: " + forwardedEmail.getId());
+            return "<html>" + "Successfully forwarded your email." + "<br>" + "Code: " + forwardedEmail.getId() + "<html";
         }catch (Exception e){
             System.out.println("Error forwarding email: " + e.getMessage());
             e.printStackTrace();
         }
+        return "";
     }
 }

@@ -20,7 +20,7 @@ public class Main {
 
         JFrame frame = new JFrame("milou!");
         JPanel mainPanel = new JPanel();
-        frame.setBounds(0, 0, 750,480);
+        frame.setBounds(0, 0, 750, 480);
         mainPanel.setLayout(null);
 
 
@@ -33,10 +33,10 @@ public class Main {
         welcome.setFont(new Font("Arial", Font.BOLD, 16));
 
         JButton signupButton = new JButton("Sign up");
-        signupButton.setBounds(320,180, 110, 40);
+        signupButton.setBounds(320, 180, 110, 40);
 
         JButton loginButton = new JButton("Login");
-        loginButton.setBounds(320, 240,110, 40);
+        loginButton.setBounds(320, 240, 110, 40);
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -90,7 +90,7 @@ public class Main {
 
                     user = AuthService.login(email, password);
 
-                    if (user == null){
+                    if (user == null) {
                         JLabel loginError = new JLabel("Error: Invalid email or password!");
                         loginError.setBounds(300, 340, 250, 30);
                         loginError.setForeground(Color.RED);
@@ -165,68 +165,68 @@ public class Main {
                                 mainPanel.setLayout(null);
                                 mainPanel.add(backgroundLabel);
 
-                               JLabel recipientsLabel = new JLabel("Recipient(s) (comma-separated): ");
-                               recipientsLabel.setBounds(50, 120, 190, 30);
-                               mainPanel.add(recipientsLabel);
+                                JLabel recipientsLabel = new JLabel("Recipient(s) (comma-separated): ");
+                                recipientsLabel.setBounds(50, 120, 190, 30);
+                                mainPanel.add(recipientsLabel);
 
-                               JTextField recipientsField = new JTextField();
-                               recipientsField.setBounds(240,120, 150, 40);
-                               mainPanel.add(recipientsField);
+                                JTextField recipientsField = new JTextField();
+                                recipientsField.setBounds(240, 120, 150, 40);
+                                mainPanel.add(recipientsField);
 
-                               JLabel subjectLabel = new JLabel("Subject: ");
-                               subjectLabel.setBounds(185, 170, 50, 30);
-                               mainPanel.add(subjectLabel);
+                                JLabel subjectLabel = new JLabel("Subject: ");
+                                subjectLabel.setBounds(185, 170, 50, 30);
+                                mainPanel.add(subjectLabel);
 
-                               JTextField subjectField = new JTextField();
-                               subjectField.setBounds(240, 170, 150, 40);
-                               mainPanel.add(subjectField);
+                                JTextField subjectField = new JTextField();
+                                subjectField.setBounds(240, 170, 150, 40);
+                                mainPanel.add(subjectField);
 
-                               JLabel bodyLabel = new JLabel("Body: ");
-                               bodyLabel.setBounds(200, 220, 50, 30);
-                               mainPanel.add(bodyLabel);
+                                JLabel bodyLabel = new JLabel("Body: ");
+                                bodyLabel.setBounds(200, 220, 50, 30);
+                                mainPanel.add(bodyLabel);
 
-                               JTextField bodyField = new JTextField();
-                               bodyField.setBounds(240, 220, 450, 80);
-                               mainPanel.add(bodyField);
+                                JTextField bodyField = new JTextField();
+                                bodyField.setBounds(240, 220, 450, 80);
+                                mainPanel.add(bodyField);
 
-                               mainPanel.add(goBackToLogin);
+                                mainPanel.add(goBackToLogin);
 
-                               JButton sendEmail = new JButton("Send");
-                               sendEmail.setBounds(340, 370, 90, 30);
+                                JButton sendEmail = new JButton("Send");
+                                sendEmail.setBounds(340, 370, 90, 30);
 
-                               mainPanel.add(sendEmail);
-                               sendEmail.addActionListener(new ActionListener() {
-                                   @Override
-                                   public void actionPerformed(ActionEvent e) {
-                                       String recipient = recipientsField.getText();
-                                       List<String> recipients = Arrays.asList(recipient.split(","));
-                                       String subject = subjectField.getText();
-                                       String body = bodyField.getText();
+                                mainPanel.add(sendEmail);
+                                sendEmail.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        String recipient = recipientsField.getText();
+                                        List<String> recipients = Arrays.asList(recipient.split(","));
+                                        String subject = subjectField.getText();
+                                        String body = bodyField.getText();
 
-                                       String result = EmailService.sendEmail(user, recipients, subject, body);
+                                        String result = EmailService.sendEmail(user, recipients, subject, body);
 
-                                       mainPanel.removeAll();
-                                       mainPanel.setLayout(null);
-                                       mainPanel.add(backgroundLabel);
+                                        mainPanel.removeAll();
+                                        mainPanel.setLayout(null);
+                                        mainPanel.add(backgroundLabel);
 
-                                       JLabel message = new JLabel(result);
-                                       message.setBounds(220, 170, 380, 100);
-                                       message.setFont(new Font("Arial", Font.BOLD, 20));
+                                        JLabel message = new JLabel(result);
+                                        message.setBounds(220, 170, 380, 100);
+                                        message.setFont(new Font("Arial", Font.BOLD, 20));
 
-                                       mainPanel.add(goBackToMenu);
+                                        mainPanel.add(goBackToMenu);
 
-                                       if (result.startsWith("Error")){
-                                           message.setForeground(Color.RED);
-                                       } else {
-                                           message.setForeground(Color.GREEN);
-                                       }
-                                       mainPanel.add(message);
+                                        if (result.startsWith("Error")) {
+                                            message.setForeground(Color.RED);
+                                        } else {
+                                            message.setForeground(Color.GREEN);
+                                        }
+                                        mainPanel.add(message);
 
-                                       mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
-                                       mainPanel.revalidate();
-                                       mainPanel.repaint();
-                                   }
-                               });
+                                        mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
+                                        mainPanel.revalidate();
+                                        mainPanel.repaint();
+                                    }
+                                });
 
                                 mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
                                 mainPanel.revalidate();
@@ -287,9 +287,9 @@ public class Main {
                                                 mainPanel.repaint();
                                             }
                                         });
-                                         mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
-                                         mainPanel.revalidate();
-                                         mainPanel.repaint();
+                                        mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
+                                        mainPanel.revalidate();
+                                        mainPanel.repaint();
                                     }
                                 });
 
@@ -403,12 +403,11 @@ public class Main {
                                             }
                                         });
 
-                                                mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
-                                                mainPanel.revalidate();
-                                                mainPanel.repaint();
-                                            }
-                                        });
-
+                                        mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
+                                        mainPanel.revalidate();
+                                        mainPanel.repaint();
+                                    }
+                                });
 
 
                                 viewSent.setBounds(390, 240, 130, 50);
@@ -481,12 +480,10 @@ public class Main {
 
                                 JTextField codeField = new JTextField();
                                 codeField.setBounds(280, 160, 80, 40);
-                                String code = codeField.getText();
                                 mainPanel.add(codeField);
 
                                 JTextField bodyField = new JTextField();
                                 bodyField.setBounds(280, 210, 320, 50);
-                                String body = bodyField.getText();
                                 mainPanel.add(bodyField);
 
                                 JButton sendReply = new JButton("send");
@@ -498,9 +495,12 @@ public class Main {
                                         mainPanel.setLayout(null);
                                         mainPanel.add(backgroundLabel);
 
+                                        String code = codeField.getText();
+                                        String body = bodyField.getText();
+
                                         String result = EmailService.replyToEmail(user, code, body);
                                         JLabel message = new JLabel(result);
-                                        message.setBounds(200, 150, 150, 80);
+                                        message.setBounds(200, 150, 350, 120);
                                         mainPanel.add(message);
                                         mainPanel.add(goBackToMenu);
 
@@ -533,18 +533,15 @@ public class Main {
                                 mainPanel.add(codeLabel);
 
                                 JLabel recipientsLabel = new JLabel("recipient(s) (comma-separated): ");
-                                recipientsLabel.setBounds(230, 210, 80, 40);
+                                recipientsLabel.setBounds(90, 210, 200, 40);
                                 mainPanel.add(recipientsLabel);
 
                                 JTextField codeField = new JTextField();
                                 codeField.setBounds(280, 160, 80, 40);
-                                String code = codeField.getText();
                                 mainPanel.add(codeField);
 
                                 JTextField recipientsField = new JTextField();
                                 recipientsField.setBounds(280, 210, 200, 50);
-                                String recipient = recipientsField.getText();
-                                List<String> recipients = Arrays.asList(recipient.split(","));
                                 mainPanel.add(recipientsField);
 
                                 mainPanel.add(goBackToMenu);
@@ -554,7 +551,24 @@ public class Main {
                                 sendForward.addActionListener(new ActionListener() {
                                     @Override
                                     public void actionPerformed(ActionEvent e) {
+                                        mainPanel.removeAll();
+                                        mainPanel.setLayout(null);
+                                        mainPanel.add(backgroundLabel);
 
+                                        String code = codeField.getText();
+                                        String recipient = recipientsField.getText();
+                                        List<String> recipients = Arrays.asList(recipient.split(","));
+
+                                        String result = EmailService.forwardEmail(user, code, recipients);
+
+                                        JLabel message = new JLabel(result);
+                                        message.setBounds(250, 150, 350, 90);
+                                        mainPanel.add(message);
+                                        mainPanel.add(goBackToMenu);
+
+                                        mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
+                                        mainPanel.revalidate();
+                                        mainPanel.repaint();
                                     }
                                 });
 
@@ -637,14 +651,14 @@ public class Main {
                     String password = passwordField.getText();
 
                     String result = AuthService.signUp(name, email, password);
-                    if(!result.equals("true")){
-                      JTextArea error = new JTextArea(result);
-                      error.setBounds(250, 340, 100, 30);
-                      error.setEditable(false);
-                      error.setOpaque(false);
-                      mainPanel.add(error);
-                      mainPanel.revalidate();
-                      mainPanel.repaint();
+                    if (!result.equals("true")) {
+                        JTextArea error = new JTextArea(result);
+                        error.setBounds(250, 340, 100, 30);
+                        error.setEditable(false);
+                        error.setOpaque(false);
+                        mainPanel.add(error);
+                        mainPanel.revalidate();
+                        mainPanel.repaint();
                     } else {
                         JLabel massage = new JLabel("<html>Your new account is created.<br> Go ahead and login!<html>");
                         massage.setBounds(150, 340, 90, 30);
@@ -669,103 +683,5 @@ public class Main {
         frame.add(mainPanel);
 
         frame.setVisible(true);
-        while (true){
-            System.out.println("[L]ogin, [S]ign up: ");
-            String input = scanner.nextLine().toLowerCase();
-
-
-            if (input.equals("l") || input.equals("login")){
-                System.out.println("Email: ");
-                String email = scanner.nextLine();
-
-                System.out.println("Password: ");
-                String password = scanner.nextLine();
-
-               user = AuthService.login(email, password);
-            }
-            else if (input.equals("s") || input.equals("sign up")){
-                System.out.println("Name: ");
-                String name = scanner.nextLine().trim();
-
-                System.out.println("Email: ");
-                String email = scanner.nextLine().trim();
-
-                System.out.println("Password: ");
-                String password = scanner.nextLine().trim();
-
-                if(AuthService.signUp(name, email, password).equals("true")){
-                    printLine();
-                    continue;
-                }
-            }
-            else {
-                System.out.println("Invalid option. Please enter [L]ogin or [S]ign up.");
-                continue;
-            }
-
-            if (user != null) {
-                System.out.println("Welcome back, " + user.getName() + "!");
-                while (true) {
-                    printLine();
-                    System.out.println("[S]end, [V]iew, [R]eply, [F]orward: ");
-                    String command = scanner.nextLine().toLowerCase();
-
-                    if (command.equals("s") || command.equals("send")) {
-                        System.out.println("Recipient(s) (comma-separated): ");
-                        String recipientInput = scanner.nextLine();
-                        List<String> recipient = Arrays.asList(recipientInput.split(","));
-
-                        System.out.println("Subject: ");
-                        String subject = scanner.nextLine();
-
-                        System.out.println("Body: ");
-                        String body = scanner.nextLine();
-
-                        EmailService.sendEmail(user, recipient, subject, body);
-
-                    } else if (command.equals("v") || command.equals("view")) {
-                        printLine();
-                        System.out.println("[A]ll emails, [U]nread emails, [S]ent emails, Read by [C]ode: ");
-                        String newCommand = scanner.nextLine().toLowerCase();
-
-                        if (newCommand.equals("a") || newCommand.equals("u") || newCommand.equals("s")) {
-                            EmailService.viewEmails(user, newCommand);
-                        } else if (newCommand.equals("c")) {
-                            System.out.println("Code: ");
-                            String emailCode = scanner.nextLine();
-                            EmailService.readEmail(user, emailCode);
-                        } else {
-                            System.out.println("Invalid option.");
-                        }
-                    } else if (command.equals("r") || command.equals("reply")) {
-                        System.out.println("Code: ");
-                        String code = scanner.nextLine();
-
-                        System.out.println("Body: ");
-                        String body = scanner.nextLine();
-
-                        EmailService.replyToEmail(user, code, body);
-                    } else if (command.equals("f") || command.equals("forward")){
-                        System.out.println("Code: ");
-                        String code = scanner.nextLine();
-
-                        System.out.println("Recipient(s) (comma-separated): ");
-                        String recipientInput = scanner.nextLine();
-                        List<String> recipient = Arrays.asList(recipientInput.split(","));
-
-                        System.out.println("Extra note: ");
-                        String note = scanner.nextLine();
-
-                        EmailService.forwardEmail(user, code, recipient);
-                    }
-                }
-            }
-        }
-    }
-
-    public static void printLine(){
-        System.out.println();
-        System.out.println("-----------------------------------------------------");
-        System.out.println();
     }
 }

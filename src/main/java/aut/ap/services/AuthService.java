@@ -1,7 +1,6 @@
 package aut.ap.services;
 
 import aut.ap.DatabaseManager;
-import aut.ap.Main;
 import aut.ap.User;
 import org.hibernate.Session;
 
