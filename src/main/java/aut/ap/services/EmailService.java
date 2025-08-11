@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 
 public class EmailService {
-    public static void sendEmail(User sender, List<String> recipientEmails, String subject, String body){
+    public static String sendEmail(User sender, List<String> recipientEmails, String subject, String body){
         try(Session session = DatabaseManager.getSession()){
             session.beginTransaction();
 
@@ -29,22 +29,24 @@ public class EmailService {
                     EmailRecipient emailRecipient = new EmailRecipient(email, recipient);
                     session.persist(emailRecipient);
                 } else {
-                    System.out.println("Error: Recipient '" + recipientEmail + "' not found!");
+                    return "Error: Recipient '" + recipientEmail + "' not found!";
                 }
             }
 
             session.getTransaction().commit();
-            System.out.println("Successfully sent your email.\nCode: " + email.getId());
+            return "<html>Successfully sent your email.<br>Code: <html>" + email.getId();
         } catch (Exception e){
             System.out.println("Error sending email: " + e.getMessage());
             e.printStackTrace();
         }
+        return "";
     }
 
-    public static void viewEmails(User user, String type){
+    public static String  viewEmails(User user, String type){
         Scanner scanner = new Scanner(System.in);
         try(Session session = DatabaseManager.getSession()){
             List<Email> emails = new ArrayList<>();
+            String result = "";
 
             switch (type.toLowerCase()){
                 case "a":
@@ -52,7 +54,7 @@ public class EmailService {
                             .setParameter("userId", user.getId())
                             .getResultList();
 
-                    System.out.println("All Emails: ");
+                    result = result + "<html>All Emails: <br><html>";
                     break;
 
                 case "u":
@@ -60,7 +62,7 @@ public class EmailService {
                             .setParameter("userId", user.getId())
                             .getResultList();
 
-                    System.out.println("Unread Emails: ");
+                    result = result + "<html>Unread Emails: <br><html>";
                     break;
 
                 case "s":
@@ -68,7 +70,7 @@ public class EmailService {
                             .setParameter("userId", user.getId())
                             .getResultList();
 
-                    System.out.println("Sent Emails: ");
+                    result = result + "<html>Sent Emails: <br><html>";
                     break;
 
                 case "c":
@@ -79,8 +81,8 @@ public class EmailService {
             }
 
             if (emails.isEmpty()){
-                System.out.println("No emails found.");
-                return;
+                return "No emails found.";
+
             }
 
             for (Email email : emails){
@@ -90,16 +92,14 @@ public class EmailService {
                         .stream()
                         .collect(Collectors.joining(", "));
 
-                System.out.print("+ " + email.getSender().getEmail() + " - " + email.getSubject() + " (" + email.getId() + ")");
-
-           if (!recipients.isEmpty()){
-               System.out.println(" To: " + recipients);
-              }
+                result = result + "+ " + email.getSender().getEmail() + " - " + email.getSubject() + " (" + email.getId() + "<html>)<br><html>";
             }
+            return result;
         }catch (Exception e){
             System.out.println("Error viewing emails: " + e.getMessage());
             e.printStackTrace();
         }
+        return "";
     }
 
     public static List<Email> readByCode(String code) {
@@ -117,7 +117,7 @@ public class EmailService {
         return null;
     }
 
-    public static void readEmail(User user, String emailCode){
+    public static String readEmail(User user, String emailCode){
         try(Session session = DatabaseManager.getSession()){
             session.beginTransaction();
 
@@ -126,8 +126,8 @@ public class EmailService {
                     .uniqueResult();
 
             if (email == null){
-                System.out.println("Error: Email not found!");
-                return;
+                return "Error: Email not found!";
+
             }
 
             boolean isRecipient = session.createQuery("select COUNT(r) from EmailRecipient r where r.email.id = :emailId and r.recipient.id = :userId", Long.class)
@@ -136,8 +136,8 @@ public class EmailService {
                     .getSingleResult() > 0;
 
             if (!isRecipient && email.getSender().getId() != user.getId()){
-                System.out.println("You cannot read this email.");
-                return;
+              return "You cannot read this email.";
+
             }
 
             String recipients = session.createQuery("select u.email from User u join EmailRecipient r on u.id = r.recipient.id where r.email.id = :emailId", String.class)
@@ -146,21 +146,19 @@ public class EmailService {
                     .stream()
                     .collect(Collectors.joining(", "));
 
-            System.out.println("\nCode: " + email.getId());
-            System.out.println("Recipient(s): " + recipients);
-            System.out.println("Subject: " + email.getSubject());
-            System.out.println("Date: " + email.getSentAt());
-            System.out.println("\n" + email.getBody());
-
             session.createQuery("update EmailRecipient set isRead = true where email.id = :emailId and recipient.id = :userId")
                     .setParameter("emailId", email.getId())
                     .setParameter("userId", user.getId())
                     .executeUpdate();
             session.getTransaction().commit();
+
+            return "<html>" + "Code: " + email.getId() + "<br><br>" + " Recipient(s): " + recipients +
+                    "<br><br>" + " Subject: " + email.getSubject() + "<br><br>" + "Date: " + email.getSentAt() + "<br><br>" + "Body: " + email.getBody() + "<html>";
+
         }
     }
 
-    public static void replyToEmail(User replier, String originalCode, String body){
+    public static String  replyToEmail(User replier, String originalCode, String body){
         try(Session session = DatabaseManager.getSession()) {
             session.beginTransaction();
 
@@ -168,9 +166,8 @@ public class EmailService {
                     .setParameter("code", originalCode)
                     .uniqueResult();
             if(originalEmail == null){
-                System.out.println("Email not found!");
                 session.getTransaction().commit();
-                return;
+                return"Error: Email not found!";
             }
             Long count = session.createQuery("select count(r) from EmailRecipient r where r.email.id = :emailId and r.recipient.id = :userId", Long.class)
                     .setParameter("emailId", originalEmail.getId())
@@ -181,9 +178,8 @@ public class EmailService {
             boolean isSender = originalEmail.getSender().getId() == replier.getId();
 
             if (!isRecipient && !isSender){
-                System.out.println("You can only reply to emails that are sent to you or sent by you!");
                 session.getTransaction().commit();
-                return;
+                return "Error: You can only reply to emails that are sent to you or sent by you!";
             }
 
                 Email replyEmail = new Email(replier, "[Re] " + originalEmail.getSubject(), body);
@@ -194,13 +190,14 @@ public class EmailService {
                session.persist(replyEmailRecipient);
 
                 session.getTransaction().commit();
-                System.out.println("Successfully sent your reply to email " + originalCode + "\nCode: " + replyEmail.getId());
+                return "<html>" + "Successfully sent your reply to email " + originalCode + "<br>" + "Code: " + replyEmail.getId() + "<html>";
             }catch (Exception e){
         System.out.println("Error replying email: " + e.getMessage());
         e.printStackTrace();
     }
+        return "";
     }
-    public static void forwardEmail(User sender, String originalCode, List<String> newRecipients){
+    public static String  forwardEmail(User sender, String originalCode, List<String> newRecipients){
         try(Session session = DatabaseManager.getSession()) {
             session.beginTransaction();
 
@@ -209,9 +206,8 @@ public class EmailService {
                     .uniqueResult();
 
             if(originalEmail == null){
-                System.out.println("Email not found!");
                 session.getTransaction().commit();
-                return;
+                return "Email not found!";
             }
             boolean isRecipient = session.createQuery("select count(r) from EmailRecipient r where r.email.id = :emailId and r.recipient.id = :userId", Long.class)
                     .setParameter("emailId", originalEmail.getId())
@@ -221,9 +217,8 @@ public class EmailService {
             boolean isSender = originalEmail.getSender().getId() == sender.getId();
 
             if (!isRecipient && !isSender){
-                System.out.println("You can only forward emails that were sent to you or sent by you!");
                 session.getTransaction().commit();
-                return;
+                return "You can only forward emails that were sent to you or sent by you!";
             }
 
             Email forwardedEmail = new Email(sender, "[FW] " + originalEmail.getSubject(), originalEmail.getBody());
@@ -238,16 +233,16 @@ public class EmailService {
                     EmailRecipient emailRecipient = new EmailRecipient(forwardedEmail, recipient);
                     session.persist(emailRecipient);
                 } else {
-                    System.out.println("Error: Recipient '" + recipientEmail + "'not found!");
+                     return "Error: Recipient '" + recipientEmail + "'not found!";
                 }
             }
 
             session.getTransaction().commit();
-            System.out.println("Successfully forwarded your email.");
-            System.out.println("Code: " + forwardedEmail.getId());
+            return "<html>" + "Successfully forwarded your email." + "<br>" + "Code: " + forwardedEmail.getId() + "<html";
         }catch (Exception e){
             System.out.println("Error forwarding email: " + e.getMessage());
             e.printStackTrace();
         }
+        return "";
     }
 }

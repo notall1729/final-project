@@ -18,9 +18,6 @@ public class EmailRecipient {
     private boolean isRead = false;
 
 
-    public EmailRecipient(){
-
-    }
     public EmailRecipient(Email email, User recipient) {
         this.email = email;
         this.recipient = recipient;
