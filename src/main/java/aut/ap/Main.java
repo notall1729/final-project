@@ -481,10 +481,12 @@ public class Main {
 
                                 JTextField codeField = new JTextField();
                                 codeField.setBounds(280, 160, 80, 40);
+                                String code = codeField.getText();
                                 mainPanel.add(codeField);
 
                                 JTextField bodyField = new JTextField();
                                 bodyField.setBounds(280, 210, 320, 50);
+                                String body = bodyField.getText();
                                 mainPanel.add(bodyField);
 
                                 JButton sendReply = new JButton("send");
@@ -492,7 +494,19 @@ public class Main {
                                 sendReply.addActionListener(new ActionListener() {
                                     @Override
                                     public void actionPerformed(ActionEvent e) {
-                                        
+                                        mainPanel.removeAll();
+                                        mainPanel.setLayout(null);
+                                        mainPanel.add(backgroundLabel);
+
+                                        String result = EmailService.replyToEmail(user, code, body);
+                                        JLabel message = new JLabel(result);
+                                        message.setBounds(200, 150, 150, 80);
+                                        mainPanel.add(message);
+                                        mainPanel.add(goBackToMenu);
+
+                                        mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
+                                        mainPanel.revalidate();
+                                        mainPanel.repaint();
                                     }
                                 });
                                 mainPanel.add(sendReply);
@@ -510,12 +524,45 @@ public class Main {
                         forwardButton.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
+                                mainPanel.removeAll();
+                                mainPanel.setLayout(null);
+                                mainPanel.add(backgroundLabel);
 
+                                JLabel codeLabel = new JLabel("Code:");
+                                codeLabel.setBounds(230, 160, 80, 40);
+                                mainPanel.add(codeLabel);
+
+                                JLabel recipientsLabel = new JLabel("recipient(s) (comma-separated): ");
+                                recipientsLabel.setBounds(230, 210, 80, 40);
+                                mainPanel.add(recipientsLabel);
+
+                                JTextField codeField = new JTextField();
+                                codeField.setBounds(280, 160, 80, 40);
+                                String code = codeField.getText();
+                                mainPanel.add(codeField);
+
+                                JTextField recipientsField = new JTextField();
+                                recipientsField.setBounds(280, 210, 200, 50);
+                                String recipient = recipientsField.getText();
+                                List<String> recipients = Arrays.asList(recipient.split(","));
+                                mainPanel.add(recipientsField);
+
+                                mainPanel.add(goBackToMenu);
+                                JButton sendForward = new JButton("Send");
+                                sendForward.setBounds(320, 280, 90, 30);
+                                mainPanel.add(sendForward);
+                                sendForward.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+
+                                    }
+                                });
+
+                                mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
+                                mainPanel.revalidate();
+                                mainPanel.repaint();
                             }
                         });
-
-                       /*
-                        */
 
                         mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
                         mainPanel.revalidate();

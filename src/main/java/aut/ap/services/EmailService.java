@@ -158,7 +158,7 @@ public class EmailService {
         }
     }
 
-    public static void replyToEmail(User replier, String originalCode, String body){
+    public static String  replyToEmail(User replier, String originalCode, String body){
         try(Session session = DatabaseManager.getSession()) {
             session.beginTransaction();
 
@@ -166,9 +166,8 @@ public class EmailService {
                     .setParameter("code", originalCode)
                     .uniqueResult();
             if(originalEmail == null){
-                System.out.println("Email not found!");
                 session.getTransaction().commit();
-                return;
+                return"Error: Email not found!";
             }
             Long count = session.createQuery("select count(r) from EmailRecipient r where r.email.id = :emailId and r.recipient.id = :userId", Long.class)
                     .setParameter("emailId", originalEmail.getId())
@@ -179,9 +178,8 @@ public class EmailService {
             boolean isSender = originalEmail.getSender().getId() == replier.getId();
 
             if (!isRecipient && !isSender){
-                System.out.println("You can only reply to emails that are sent to you or sent by you!");
                 session.getTransaction().commit();
-                return;
+                return "Error: You can only reply to emails that are sent to you or sent by you!";
             }
 
                 Email replyEmail = new Email(replier, "[Re] " + originalEmail.getSubject(), body);
@@ -192,11 +190,12 @@ public class EmailService {
                session.persist(replyEmailRecipient);
 
                 session.getTransaction().commit();
-                System.out.println("Successfully sent your reply to email " + originalCode + "\nCode: " + replyEmail.getId());
+                return "<html>" + "Successfully sent your reply to email " + originalCode + "<br>" + "Code: " + replyEmail.getId() + "<html>";
             }catch (Exception e){
         System.out.println("Error replying email: " + e.getMessage());
         e.printStackTrace();
     }
+        return "";
     }
     public static void forwardEmail(User sender, String originalCode, List<String> newRecipients){
         try(Session session = DatabaseManager.getSession()) {
