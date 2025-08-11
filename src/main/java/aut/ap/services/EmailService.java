@@ -42,10 +42,11 @@ public class EmailService {
         return "";
     }
 
-    public static void viewEmails(User user, String type){
+    public static String  viewEmails(User user, String type){
         Scanner scanner = new Scanner(System.in);
         try(Session session = DatabaseManager.getSession()){
             List<Email> emails = new ArrayList<>();
+            String result = "";
 
             switch (type.toLowerCase()){
                 case "a":
@@ -53,7 +54,7 @@ public class EmailService {
                             .setParameter("userId", user.getId())
                             .getResultList();
 
-                    System.out.println("All Emails: ");
+                    result = result + "<html>All Emails: <br><html>";
                     break;
 
                 case "u":
@@ -61,7 +62,7 @@ public class EmailService {
                             .setParameter("userId", user.getId())
                             .getResultList();
 
-                    System.out.println("Unread Emails: ");
+                    result = result + "<html>Unread Emails: <br><html>";
                     break;
 
                 case "s":
@@ -69,7 +70,7 @@ public class EmailService {
                             .setParameter("userId", user.getId())
                             .getResultList();
 
-                    System.out.println("Sent Emails: ");
+                    result = result + "<html>Sent Emails: <br><html>";
                     break;
 
                 case "c":
@@ -80,8 +81,8 @@ public class EmailService {
             }
 
             if (emails.isEmpty()){
-                System.out.println("No emails found.");
-                return;
+                return "No emails found.";
+
             }
 
             for (Email email : emails){
@@ -91,16 +92,14 @@ public class EmailService {
                         .stream()
                         .collect(Collectors.joining(", "));
 
-                System.out.print("+ " + email.getSender().getEmail() + " - " + email.getSubject() + " (" + email.getId() + ")");
-
-           if (!recipients.isEmpty()){
-               System.out.println(" To: " + recipients);
-              }
+                result = result + "+ " + email.getSender().getEmail() + " - " + email.getSubject() + " (" + email.getId() + "<html>)<br><html>";
             }
+            return result;
         }catch (Exception e){
             System.out.println("Error viewing emails: " + e.getMessage());
             e.printStackTrace();
         }
+        return "";
     }
 
     public static List<Email> readByCode(String code) {
@@ -118,7 +117,7 @@ public class EmailService {
         return null;
     }
 
-    public static void readEmail(User user, String emailCode){
+    public static String readEmail(User user, String emailCode){
         try(Session session = DatabaseManager.getSession()){
             session.beginTransaction();
 
@@ -127,8 +126,8 @@ public class EmailService {
                     .uniqueResult();
 
             if (email == null){
-                System.out.println("Error: Email not found!");
-                return;
+                return "Error: Email not found!";
+
             }
 
             boolean isRecipient = session.createQuery("select COUNT(r) from EmailRecipient r where r.email.id = :emailId and r.recipient.id = :userId", Long.class)
@@ -137,8 +136,8 @@ public class EmailService {
                     .getSingleResult() > 0;
 
             if (!isRecipient && email.getSender().getId() != user.getId()){
-                System.out.println("You cannot read this email.");
-                return;
+              return "You cannot read this email.";
+
             }
 
             String recipients = session.createQuery("select u.email from User u join EmailRecipient r on u.id = r.recipient.id where r.email.id = :emailId", String.class)
@@ -147,17 +146,15 @@ public class EmailService {
                     .stream()
                     .collect(Collectors.joining(", "));
 
-            System.out.println("\nCode: " + email.getId());
-            System.out.println("Recipient(s): " + recipients);
-            System.out.println("Subject: " + email.getSubject());
-            System.out.println("Date: " + email.getSentAt());
-            System.out.println("\n" + email.getBody());
-
             session.createQuery("update EmailRecipient set isRead = true where email.id = :emailId and recipient.id = :userId")
                     .setParameter("emailId", email.getId())
                     .setParameter("userId", user.getId())
                     .executeUpdate();
             session.getTransaction().commit();
+
+            return "<html>" + "Code: " + email.getId() + "<br><br>" + " Recipient(s): " + recipients +
+                    "<br><br>" + " Subject: " + email.getSubject() + "<br><br>" + "Date: " + email.getSentAt() + "<br><br>" + "Body: " + email.getBody() + "<html>";
+
         }
     }
 
