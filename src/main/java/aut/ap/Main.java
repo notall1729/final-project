@@ -359,7 +359,7 @@ public class Main {
                                         JButton next = new JButton("Next");
                                         next.setBounds(300, 300, 80, 40);
                                         mainPanel.add(next);
-                                        
+
                                         next.addActionListener(new ActionListener() {
                                             @Override
                                             public void actionPerformed(ActionEvent e) {
@@ -612,7 +612,7 @@ public class Main {
                 mainPanel.add(emailLabel);
 
                 JTextField emailField = new JTextField();
-                emailField.setBounds(320, 210, 140, 40);
+                emailField.setBounds(320, 150, 140, 40);
                 mainPanel.add(emailField);
 
                 JLabel passwordLabel = new JLabel("Password:");
@@ -620,7 +620,7 @@ public class Main {
                 mainPanel.add(passwordLabel);
 
                 JTextField passwordField = new JTextField();
-                passwordField.setBounds(320, 150, 140, 40);
+                passwordField.setBounds(320, 210, 140, 40);
                 mainPanel.add(passwordField);
 
                 JButton goBack = new JButton("Go back");

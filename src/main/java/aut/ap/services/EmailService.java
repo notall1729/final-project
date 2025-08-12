@@ -167,7 +167,7 @@ public class EmailService {
                     .uniqueResult();
             if(originalEmail == null){
                 session.getTransaction().commit();
-                return"Error: Email not found!";
+                return "Error: Email not found!";
             }
             Long count = session.createQuery("select count(r) from EmailRecipient r where r.email.id = :emailId and r.recipient.id = :userId", Long.class)
                     .setParameter("emailId", originalEmail.getId())
