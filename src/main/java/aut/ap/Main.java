@@ -359,6 +359,7 @@ public class Main {
                                         JButton next = new JButton("Next");
                                         next.setBounds(300, 300, 80, 40);
                                         mainPanel.add(next);
+                                        
                                         next.addActionListener(new ActionListener() {
                                             @Override
                                             public void actionPerformed(ActionEvent e) {
@@ -652,21 +653,27 @@ public class Main {
 
                     String result = AuthService.signUp(name, email, password);
                     if (!result.equals("true")) {
-                        JTextArea error = new JTextArea(result);
-                        error.setBounds(250, 340, 100, 30);
-                        error.setEditable(false);
-                        error.setOpaque(false);
+                        JLabel error = new JLabel(result);
+                        error.setBounds(250, 340, 400, 50);
                         mainPanel.add(error);
-                        mainPanel.revalidate();
-                        mainPanel.repaint();
+
+                        Timer timer = new Timer(10000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                error.setVisible(false);
+                            }
+                        });
+                        timer.setRepeats(false);
+                        timer.start();
                     } else {
-                        JLabel massage = new JLabel("<html>Your new account is created.<br> Go ahead and login!<html>");
-                        massage.setBounds(150, 340, 90, 30);
+                        JLabel massage = new JLabel("Your new account is created. Go ahead and login!");
+                        massage.setBounds(250, 330, 490, 50);
                         massage.setForeground(Color.GREEN);
                         mainPanel.add(massage);
-                        mainPanel.revalidate();
-                        mainPanel.repaint();
                     }
+                    mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
+                    mainPanel.revalidate();
+                    mainPanel.repaint();
                 });
                 mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1);
                 mainPanel.revalidate();
